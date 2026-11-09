@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mi Consola</title>
+  <meta name="description" content="Emulador de NES, SNES, Game Boy, GBA, N64 y DS que funciona en Safari.">
+  <meta name="theme-color" content="#e22630">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mi Consola">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="barra">
+    <h1>Mi Consola</h1>
+    <button id="btn-anadir" class="btn-principal">+ Añadir juego</button>
+  </header>
+
+  <main>
+    <div id="aviso-instalar" class="aviso" hidden>
+      <strong>Instálala en tu iPhone:</strong> pulsa el botón <span class="ico-compartir" aria-label="Compartir"></span> Compartir de Safari y elige <b>«Añadir a pantalla de inicio»</b>. Así se abre a pantalla completa y tus partidas no se borran.
+      <button class="cerrar" id="cerrar-aviso" aria-label="Cerrar">×</button>
+    </div>
+
+    <nav class="pestanas" role="tablist">
+      <button id="tab-mios" class="pestana activa" role="tab">Mis juegos</button>
+      <button id="tab-gratis" class="pestana" role="tab">Juegos gratis <span id="num-gratis"></span></button>
+    </nav>
+
+    <div id="panel-mios">
+      <ul id="lista" class="lista"></ul>
+      <section id="vacia" class="vacia" hidden>
+        <div class="vacia-icono">🎮</div>
+        <h2>Tu biblioteca está vacía</h2>
+        <p>Mira la pestaña <b>«Juegos gratis»</b> para descargar juegos con un toque, o pulsa <b>«+ Añadir juego»</b> y elige un archivo de juego desde la app Archivos (iCloud Drive, «En mi iPhone», etc.).</p>
+        <p class="pequeno">Sistemas: NES (.nes), Super Nintendo (.sfc .smc), Game Boy (.gb .gbc), Game Boy Advance (.gba), Nintendo 64 (.n64 .z64 .v64) y Nintendo DS (.nds). También .zip.</p>
+      </section>
+    </div>
+
+    <div id="panel-gratis" hidden>
+      <p class="intro-gratis">Juegos homebrew creados por aficionados y publicados con licencia libre. Toca uno para descargarlo a tu iPhone y jugar.</p>
+      <div class="filtros" id="filtros">
+        <button data-f="todos" class="filtro activo">Todos</button>
+        <button data-f="gb" class="filtro">Game Boy</button>
+        <button data-f="gba" class="filtro">GBA</button>
+      </div>
+      <ul id="lista-gratis" class="rejilla"></ul>
+    </div>
+
+    <p class="legal">Usa solo copias de juegos que tengas o juegos homebrew libres. Los juegos se guardan solo en este dispositivo.</p>
+  </main>
+
+  <input type="file" id="selector" multiple hidden>
+
+  <dialog id="dlg-sistema">
+    <form method="dialog">
+      <h3>¿De qué consola es <span id="dlg-nombre"></span>?</h3>
+      <div id="dlg-opciones" class="opciones"></div>
+      <button value="cancelar" class="btn-secundario">Cancelar</button>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+  <script src="gratis.js"></script>
+</body>
+</html>

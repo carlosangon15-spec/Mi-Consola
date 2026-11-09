@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Jugando · Mi Consola</title>
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; overscroll-behavior: none;
+      -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: none; }
+    #contenedor { position: fixed; inset: 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+    #juego { width: 100%; height: 100%; }
+    #volver { position: fixed; z-index: 10000; top: calc(env(safe-area-inset-top) + 8px); left: calc(env(safe-area-inset-left) + 8px);
+      background: rgba(30,30,30,.7); color: #fff; border: 0; border-radius: 999px; padding: 8px 14px;
+      font: 600 14px -apple-system, system-ui, sans-serif; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+    #error { color: #fff; font: 16px -apple-system, system-ui, sans-serif; text-align: center; padding: 80px 24px; }
+    #error a { color: #ff6b6b; }
+  </style>
+</head>
+<body>
+  <button id="volver">‹ Biblioteca</button>
+  <div id="contenedor"><div id="juego"></div></div>
+
+  <script src="db.js"></script>
+  <script>
+    (async function () {
+      const id = new URLSearchParams(location.search).get("id");
+      const juego = id && await Biblioteca.obtener(id);
+      if (!juego) {
+        document.getElementById("contenedor").innerHTML =
+          '<p id="error">No encuentro este juego en tu biblioteca.<br><br><a href="./">Volver a la biblioteca</a></p>';
+        return;
+      }
+      document.title = juego.nombre + " · Mi Consola";
+      Biblioteca.marcarJugado(id).catch(() => {});
+
+      const blob = new Blob([juego.datos]);
+      const ext = (juego.archivo.split(".").pop() || "").toLowerCase();
+
+      window.EJS_player = "#juego";
+      window.EJS_core = juego.sistema;
+      window.EJS_gameName = juego.nombre;
+      window.EJS_gameUrl = new File([blob], juego.archivo);
+      window.EJS_pathtodata = "data/";
+      window.EJS_DEBUG_XX = true;          // carga los scripts sin minificar que vienen incluidos
+      window.EJS_language = "es-ES";
+      window.EJS_color = "#e22630";
+      window.EJS_backgroundColor = "#000";
+      window.EJS_startButtonName = "Jugar";
+      window.EJS_threads = false;
+      // Guardado automático de la partida cada 30 s y estados guardados dentro del navegador
+      window.EJS_defaultOptions = {
+        "save-save-interval": "30",
+        "save-state-location": "browser"
+      };
+      window.EJS_Buttons = { exitEmulation: false, netplay: false, cacheManager: false };
+
+      const s = document.createElement("script");
+      s.src = "data/loader.js";
+      document.body.appendChild(s);
+    })();
+
+    function guardarPartida() {
+      try { window.EJS_emulator && window.EJS_emulator.started && window.EJS_emulator.gameManager.saveSaveFiles(); } catch (e) {}
+    }
+    // Guarda al salir o al mandar la app al fondo
+    document.addEventListener("visibilitychange", () => { if (document.hidden) guardarPartida(); });
+    window.addEventListener("pagehide", guardarPartida);
+
+    document.getElementById("volver").onclick = () => {
+      guardarPartida();
+      setTimeout(() => location.href = "./", 400);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "Mi Consola",
+  "short_name": "Mi Consola",
+  "description": "Emulador de NES, SNES, Game Boy, GBA, N64 y DS en el navegador.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e22630",
+  "theme_color": "#e22630",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
